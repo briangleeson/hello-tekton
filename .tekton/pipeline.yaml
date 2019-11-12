@@ -8,6 +8,8 @@ spec:
       description: the pipeline pvc name
     - name: repository
       description: the git repo
+    - name: revision
+      description: the branch for the git repo
     - name: apikey
       description: the ibmcloud api key
     - name: registryNamespace
@@ -32,6 +34,8 @@ spec:
           value: $(params.pipeline-pvc)
         - name: repository
           value: $(params.repository)
+        - name: revision
+          value: $(params.revision)
         - name: apikey
           value: $(params.apikey)
         - name: registryNamespace
@@ -47,6 +51,8 @@ spec:
           value: $(params.pipeline-pvc)
         - name: repository
           value: $(params.repository)
+        - name: revision
+          value: $(params.revision)
         - name: apikey
           value: $(params.apikey)
         - name: registryRegion
@@ -60,6 +66,8 @@ spec:
           value: $(params.pipeline-pvc)
         - name: repository
           value: $(params.repository)
+        - name: revision
+          value: $(params.revision)
         - name: apikey
           value: $(params.apikey)
         - name: cluster

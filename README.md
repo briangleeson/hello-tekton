@@ -10,7 +10,8 @@ In order to build and deploy to your own cluster this sample requires parameteri
 - `clusterRegion` the region where your IKS cluster is located (default: `us-south`)
 - `registryNamespace` the IBM Cloud Container Registry namespace where the app image will be built and stored.
 - `registryRegion` the region where your  IBM Cloud Container Registry is located (default: `us-south`)
-- `repository` the source git repository where your resources are cloned (default: `https://github.com/open-toolchain/hello-tekton`). Change this if you are forking this repo.
+- `repository` the source git repository where your resources are cloned (default: `https://github.com/open-toolchain/hello-tekton`). Change this if you are forking this repo
+- `revision` the branch of the source git repository where your resources are cloned (default: `master`).
 
 For more information on Tekton Pipelines wih IBM Cloud Devops visit https://cloud.ibm.com/docs/services/ContinuousDelivery?topic=ContinuousDelivery-tekton-pipelines
 

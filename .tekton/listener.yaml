@@ -6,6 +6,8 @@ spec:
   params:
     - name: repository
       description: The git repo
+    - name: revision
+      description: the branch for the git repo
     - name: apikey
       description: the ibmcloud api key
     - name: registryNamespace
@@ -34,6 +36,8 @@ spec:
           value: pipelinerun-$(uid)-pvc
         - name: repository
           value: $(params.repository)
+        - name: revision
+          value: $(params.revision)
         - name: apikey
           value: $(params.apikey)
         - name: registryNamespace
@@ -55,6 +59,8 @@ spec:
   params:
     - name: repository
       value: "https://github.com/open-toolchain/hello-tekton"
+    - name: revision
+      value: "master"
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: EventListener
