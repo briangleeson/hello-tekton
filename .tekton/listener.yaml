@@ -24,6 +24,17 @@ spec:
       description: The Kubernetes cluster namespace
       default: prod
   resourcetemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: pipelinerun-$(uid)-pvc
+      spec:
+        resources:
+          requests:
+            storage:  5Gi
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
     - apiVersion: tekton.dev/v1alpha1
       kind: PipelineRun
       metadata:
@@ -31,9 +42,11 @@ spec:
       spec:
         pipelineRef:
             name: pipeline
+        workspaces:
+          - name: pipeline-pvc
+            persistentVolumeClaim:
+              claimName: pipelinerun-$(uid)-pvc
         params:
-        - name: pipeline-pvc
-          value: pipelinerun-$(uid)-pvc
         - name: repository
           value: $(params.repository)
         - name: revision
