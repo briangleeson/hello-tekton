@@ -15,3 +15,4 @@ In order to build and deploy to your own cluster this sample requires parameteri
 
 For more information on Tekton Pipelines wih IBM Cloud Devops visit https://cloud.ibm.com/docs/services/ContinuousDelivery?topic=ContinuousDelivery-tekton-pipelines
 
+Note that this example targets the **0.10.1 release** of Tekton.
