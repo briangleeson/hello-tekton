@@ -3,25 +3,24 @@ kind: Task
 metadata:
   name: build-task
 spec:
-  inputs:
-    params:
-      - name: repository
-        description: the git repo
-      - name: revision
-        description: the revision
-        default: master
-      - name: apikey
-        description: the ibmcloud api key
-      - name: api
-        description: the ibmcloud api endpoint
-        default: "https://cloud.ibm.com"
-      - name: registryNamespace
-        description: the ibmcloud registry namespace
-      - name: imageName
-        description: the base image name
-        default: "hello-containers-tekton"
-      - name: registryRegion
-        description: the ibmcloud registry region
+  params:
+    - name: repository
+      description: the git repo
+    - name: revision
+      description: the revision
+      default: master
+    - name: apikey
+      description: the ibmcloud api key
+    - name: api
+      description: the ibmcloud api endpoint
+      default: "https://cloud.ibm.com"
+    - name: registryNamespace
+      description: the ibmcloud registry namespace
+    - name: imageName
+      description: the base image name
+      default: "hello-containers-tekton"
+    - name: registryRegion
+      description: the ibmcloud registry region
   workspaces:
   - name: task-pvc
     mountPath: /artifacts   
@@ -94,20 +93,19 @@ kind: Task
 metadata:
   name: validate-task
 spec:
-  inputs:
-    params:
-      - name: repository
-        description: the git repo
-      - name: revision
-        description: the revision
-        default: master
-      - name: apikey
-        description: the ibmcloud api key
-      - name: api
-        description: the ibmcloud api endpoint
-        default: "https://cloud.ibm.com"
-      - name: registryRegion
-        description: the ibmcloud registry region   
+  params:
+    - name: repository
+      description: the git repo
+    - name: revision
+      description: the revision
+      default: master
+    - name: apikey
+      description: the ibmcloud api key
+    - name: api
+      description: the ibmcloud api endpoint
+      default: "https://cloud.ibm.com"
+    - name: registryRegion
+      description: the ibmcloud registry region   
   workspaces:
   - name: task-pvc
     mountPath: /artifacts         
@@ -148,26 +146,25 @@ kind: Task
 metadata:
   name: deploy-task
 spec:
-  inputs:
-    params:
-      - name: repository
-        description: the git repo
-      - name: revision
-        description: the revision
-        default: master
-      - name: apikey
-        description: the ibmcloud api key
-      - name: api
-        description: the ibmcloud api endpoint
-        default: "https://cloud.ibm.com"
-      - name: deployment-file
-        default: deployment.yml
-      - name: clusterNamespace
-        default: prod
-      - name: cluster
-        description: The IBM Cloud Kubernetes cluster name
-      - name: clusterRegion
-        description: The IBM Cloud Kubernetes cluster region
+  params:
+    - name: repository
+      description: the git repo
+    - name: revision
+      description: the revision
+      default: master
+    - name: apikey
+      description: the ibmcloud api key
+    - name: api
+      description: the ibmcloud api endpoint
+      default: "https://cloud.ibm.com"
+    - name: deployment-file
+      default: deployment.yml
+    - name: clusterNamespace
+      default: prod
+    - name: cluster
+      description: The IBM Cloud Kubernetes cluster name
+    - name: clusterRegion
+      description: The IBM Cloud Kubernetes cluster region
   workspaces:
   - name: task-pvc
     mountPath: /artifacts  
