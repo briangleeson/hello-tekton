@@ -88,7 +88,7 @@ spec:
           export REGISTRY_URL=$(ibmcloud cr info | sed "2q;d" | awk '{for(i=1;i<=NF;i++) if ($i=="Registry") print $(i+1)}');
           source build-docker-image.sh;
 ---
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: validate-task
@@ -141,7 +141,7 @@ spec:
           cp /artifacts/build.properties .;
           source check-vulnerabilities.sh || true;
 ---
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: deploy-task
