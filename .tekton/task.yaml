@@ -36,7 +36,7 @@ spec:
       args:
         - set -e -o pipefail;
           echo "Cloning $REPOSITORY";
-          git clone -q -b $REVISION $REPOSITORY .;
+          cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: pre-build-check
       image: ibmcom/pipeline-base-image
       env:
@@ -57,7 +57,7 @@ spec:
         - set -e -o pipefail;
           ibmcloud login -a $API -r $REGION;
           export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh";
-          source pre-build-check.sh;
+          cd /workspace && source pre-build-check.sh;
     - name: build-docker-image
       image: ibmcom/pipeline-base-image
       env:
@@ -86,7 +86,7 @@ spec:
           export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh";
           export GIT_COMMIT=$(git rev-parse HEAD);
           export REGISTRY_URL=$(ibmcloud cr info | sed "2q;d" | awk '{for(i=1;i<=NF;i++) if ($i=="Registry") print $(i+1)}');
-          source build-docker-image.sh;
+          cd /workspace && source build-docker-image.sh;
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
@@ -121,7 +121,7 @@ spec:
       args:
         - set -e -o pipefail;
           echo "Cloning $REPOSITORY";
-          git clone -q -b $REVISION $REPOSITORY .;
+          cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: check-vulnerabilities
       image: ibmcom/pipeline-base-image
       env:
@@ -139,7 +139,7 @@ spec:
           ibmcloud login -a $API -r $REGION;
           while read line; do export $line; done < /artifacts/build.properties;
           cp /artifacts/build.properties .;
-          source check-vulnerabilities.sh || true;
+          cd /workspace && source check-vulnerabilities.sh || true;
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
@@ -180,7 +180,7 @@ spec:
       args:
         - set -e -o pipefail;
           echo "Cloning $REPOSITORY";
-          git clone -q -b $REVISION $REPOSITORY .;
+          cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: pre-deploy-check
       image: ibmcom/pipeline-base-image
       env:
@@ -202,11 +202,13 @@ spec:
       args:
         - set -e -o pipefail;
           ibmcloud login -a $API -r $REGION;
-          $(ibmcloud ks cluster config --cluster "${PIPELINE_KUBERNETES_CLUSTER_NAME}" --export);
-          if which oc > /dev/null && ibmcloud ks cluster get "${PIPELINE_KUBERNETES_CLUSTER_NAME}" --json | jq -e '.type=="openshift"' > /dev/null; then oc login -u apikey -p "${IBMCLOUD_API_KEY}" ; fi;
+          cd /workspace;
+          export IKS_BETA_VERSION=1;
+          ibmcloud ks cluster config -c "${PIPELINE_KUBERNETES_CLUSTER_NAME}";
+          if which oc > /dev/null && ibmcloud ks cluster get -c "${PIPELINE_KUBERNETES_CLUSTER_NAME}" --json | jq -e '.type=="openshift"' > /dev/null; then oc login -u apikey -p "${IBMCLOUD_API_KEY}" ; fi;
           while read line; do export $line; done < /artifacts/build.properties;
           cp /artifacts/build.properties .;
-          source pre-deploy-check.sh;
+          cd /workspace && source pre-deploy-check.sh;
     - name: deploy-to-kubernetes
       image: ibmcom/pipeline-base-image
       env:
@@ -228,9 +230,10 @@ spec:
       args:
         - set -e -o pipefail;
           ibmcloud login -a $API -r $REGION;
-          $(ibmcloud ks cluster config --cluster "${PIPELINE_KUBERNETES_CLUSTER_NAME}" --export);
-          if which oc > /dev/null && ibmcloud ks cluster get "${PIPELINE_KUBERNETES_CLUSTER_NAME}" --json | jq -e '.type=="openshift"' > /dev/null; then oc login -u apikey -p "${IBMCLOUD_API_KEY}" ; fi;
+          export IKS_BETA_VERSION=1;
+          ibmcloud ks cluster config -c "${PIPELINE_KUBERNETES_CLUSTER_NAME}";
+          if which oc > /dev/null && ibmcloud ks cluster get -c "${PIPELINE_KUBERNETES_CLUSTER_NAME}" --json | jq -e '.type=="openshift"' > /dev/null; then oc login -u apikey -p "${IBMCLOUD_API_KEY}" ; fi;
           while read line; do export $line; done < /artifacts/build.properties;
           cp /artifacts/build.properties .;
-          source deploy-to-kubernetes.sh;
+          cd /workspace && source deploy-to-kubernetes.sh;
       
