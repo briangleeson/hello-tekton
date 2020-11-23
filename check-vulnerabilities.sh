@@ -37,12 +37,12 @@ echo "IMAGE_TAG=${IMAGE_TAG}"
 # or learn more about the available environment variables at:
 # https://console.bluemix.net/docs/services/ContinuousDelivery/pipeline_deploy_var.html#deliverypipeline_environment
 
-bx cr images --restrict ${REGISTRY_NAMESPACE}/${IMAGE_NAME}
+ibmcloud cr images --restrict ${REGISTRY_NAMESPACE}/${IMAGE_NAME}
 echo -e "Checking vulnerabilities in image: ${PIPELINE_IMAGE_URL}"
 for ITER in {1..30}
 do
   set +e
-  STATUS=$( bx cr va -e -o json ${PIPELINE_IMAGE_URL} | jq -r '.[0].status' )
+  STATUS=$( ibmcloud cr va -e -o json ${PIPELINE_IMAGE_URL} | jq -r '.[0].status' )
   set -e
   # Possible status from Vulnerability Advisor: OK, UNSUPPORTED, INCOMPLETE, UNSCANNED, FAIL, WARN
   if [[ ${STATUS} != "INCOMPLETE" && ${STATUS} != "UNSCANNED" ]]; then
