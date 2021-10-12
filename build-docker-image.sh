@@ -52,8 +52,39 @@ echo "=========================================================="
 echo -e "BUILDING CONTAINER IMAGE: ${IMAGE_NAME}:${IMAGE_TAG}"
 if [ -z "${DOCKER_ROOT}" ]; then DOCKER_ROOT=. ; fi
 if [ -z "${DOCKER_FILE}" ]; then DOCKER_FILE=${DOCKER_ROOT}/Dockerfile ; fi
+if [ -z "$EXTRA_BUILD_ARGS" ]; then
+  echo -e ""
+else
+  for buildArg in $EXTRA_BUILD_ARGS; do
+    if [ "$buildArg" == "--build-arg" ]; then
+      echo -e ""
+    else      
+      BUILD_ARGS="${BUILD_ARGS} --opt build-arg:$buildArg"
+    fi
+  done
+fi
+
+# Checking if buildctl is installed
+if which buildctl > /dev/null 2>&1; then
+  buildctl --version
+else 
+  echo "Installing Buildkit builctl"
+  curl -sL https://github.com/moby/buildkit/releases/download/v0.8.1/buildkit-v0.8.1.linux-amd64.tar.gz | tar -C /tmp -xz bin/buildctl && mv /tmp/bin/buildctl /usr/bin/buildctl && rmdir --ignore-fail-on-non-empty /tmp/bin
+  buildctl --version
+fi
+
+echo "Logging into regional IBM Container Registry"
+ibmcloud cr region-set ${REGION}
+ibmcloud cr login
+
 set -x
-ibmcloud cr build -t ${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_ROOT} -f ${DOCKER_FILE}
+## DEPRECTATED ibmcloud cr build -t ${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_ROOT} -f ${DOCKER_FILE}
+
+buildctl --addr tcp://0.0.0.0:1234 build \
+    --frontend dockerfile.v0 --opt filename=${DOCKER_FILE} --local dockerfile=${DOCKER_ROOT} \
+    ${BUILD_ARGS} --local context=${DOCKER_ROOT} \
+    --import-cache type=registry,ref=${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME} \
+    --output type=image,name="${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG}",push=true
 set +x
 
 ibmcloud cr image-inspect ${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG}

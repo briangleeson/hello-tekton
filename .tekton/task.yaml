@@ -89,6 +89,25 @@ spec:
           cd ..;
           export REGISTRY_URL=$(ibmcloud cr info | grep -m1 -i '^Container Registry' | awk '{print $3;}');
           cd /workspace && source build-docker-image.sh;
+  sidecars:
+    - image: moby/buildkit:v0.8.1
+      name: server
+      securityContext:
+        privileged: true
+        # Use a workaround to by pass virtio-fs for Continuous Delivery shared workers
+      command: ["sh", "-c"]
+      args:
+        - if [[ $(df -PT /var/lib/buildkit | awk 'NR==2 {print $2}') == virtiofs ]]; then
+           apk add e2fsprogs &&
+           truncate -s 20G /tmp/disk.img &&
+           mkfs.ext4 /tmp/disk.img &&
+           mount /tmp/disk.img /var/lib/buildkit; fi && buildkitd --addr tcp://0.0.0.0:1234;
+      # Wait for the buildkit daemon to have available workers.
+      readinessProbe:
+        initialDelaySeconds: 2
+        periodSeconds: 1
+        exec:
+          command: ["buildctl", "--addr", "tcp://0.0.0.0:1234", "debug", "workers"]
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
