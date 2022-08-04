@@ -32,18 +32,13 @@ spec:
           value: $(params.repository)
         - name: REVISION
           value: $(params.revision)
-        - name: BUILD_NUMBER
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.annotations['devops.cloud.ibm.com/build-number']
       command: ["/bin/sh", "-c"]
       args:
         - set -e -o pipefail;
           echo "Cloning $REPOSITORY";
           echo "==============";
-          echo "===BUILD_NUMBER:$BUILD_NUMBER";
-          echo "===task name 1:$(context.task.name)";
-          echo "===task name 1:$(context.taskRun.name)";
+          echo "===task name:$(context.task.name)";
+          echo "===taskRun name:$(context.taskRun.name)";
           echo "==============";
           cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: pre-build-check
