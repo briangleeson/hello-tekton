@@ -26,7 +26,7 @@ spec:
   workspaces:
   - name: pipeline-pvc
   tasks:
-    - name: pipeline-build-task
+    - name: build-task
       taskRef:
         name: build-task
       params:
@@ -43,8 +43,8 @@ spec:
       workspaces:
       - name: task-pvc
         workspace: pipeline-pvc          
-    - name: pipeline-validate-task
-      runAfter: [pipeline-build-task]
+    - name: validate-task
+      runAfter: [build-task]
       taskRef:
         name: validate-task
       params:
@@ -59,8 +59,8 @@ spec:
       workspaces:
       - name: task-pvc
         workspace: pipeline-pvc            
-    - name: pipeline-deploy-task
-      runAfter: [pipeline-validate-task]
+    - name: deploy-task
+      runAfter: [validate-task]
       taskRef:
         name: deploy-task
       params:
