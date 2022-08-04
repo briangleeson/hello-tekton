@@ -43,6 +43,7 @@ spec:
           echo "==============";
           echo "===BUILD_NUMBER:$BUILD_NUMBER";
           echo "===task name 1:$(context.task.name)";
+          echo "===task name 1:$(context.taskRun.name)";
           echo "==============";
           cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: pre-build-check
