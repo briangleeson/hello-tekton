@@ -32,10 +32,22 @@ spec:
           value: $(params.repository)
         - name: REVISION
           value: $(params.revision)
+        - name: BUILD_NUMBER
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['devops.cloud.ibm.com/build-number']
+        - name: TASK_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['name']
       command: ["/bin/sh", "-c"]
       args:
         - set -e -o pipefail;
           echo "Cloning $REPOSITORY";
+          echo "==============";
+          echo "===BUILD_NUMBER:$BUILD_NUMBER";
+          echo "===BUILD_NUMBER:$TASK_NAME";
+          echo "==============";
           cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: pre-build-check
       image: ibmcom/pipeline-base-image
@@ -79,19 +91,9 @@ spec:
           value: "0"
         - name: GIT_BRANCH
           value: $(params.revision)
-        - name: BUILD_NUMBER
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.annotations['devops.cloud.ibm.com/build-number']
-        - name: TASK_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.annotations['name']
       command: ["/bin/bash", "-c"]
       args:
         - set -e -o pipefail;
-          echo "===BUILD_NUMBER:$BUILD_NUMBER";
-          echo "===BUILD_NUMBER:$TASK_NAME";
           ibmcloud login -a $API -r $REGION;
           export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh";
           cd /workspace;
