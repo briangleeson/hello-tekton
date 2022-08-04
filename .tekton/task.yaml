@@ -90,10 +90,8 @@ spec:
       command: ["/bin/bash", "-c"]
       args:
         - set -e -o pipefail;
-          echo "=========================";
-          echo "=== BUILD_NUMBER: $BUILD_NUMBER";
-          echo "=== BUILD_NUMBER: $TASK_NAME";
-          echo "=========================";
+          echo "=== BUILD_NUMBER: $BUILD_NUMBER"
+          echo "=== BUILD_NUMBER: $TASK_NAME"
           ibmcloud login -a $API -r $REGION;
           export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh";
           cd /workspace;
