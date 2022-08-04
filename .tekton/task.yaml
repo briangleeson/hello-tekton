@@ -39,14 +39,15 @@ spec:
         - name: TASK_NAME
           valueFrom:
             fieldRef:
-              fieldPath: metadata.annotations['name']
+              fieldPath: context.task.name
       command: ["/bin/sh", "-c"]
       args:
         - set -e -o pipefail;
           echo "Cloning $REPOSITORY";
           echo "==============";
           echo "===BUILD_NUMBER:$BUILD_NUMBER";
-          echo "===BUILD_NUMBER:$TASK_NAME";
+          echo "===task name 1:$(context.task.name)";
+          echo "===task name 2:$TASK_NAME";
           echo "==============";
           cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: pre-build-check
