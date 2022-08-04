@@ -36,10 +36,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.annotations['devops.cloud.ibm.com/build-number']
-        - name: TASK_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: context.task.name
       command: ["/bin/sh", "-c"]
       args:
         - set -e -o pipefail;
@@ -47,7 +43,6 @@ spec:
           echo "==============";
           echo "===BUILD_NUMBER:$BUILD_NUMBER";
           echo "===task name 1:$(context.task.name)";
-          echo "===task name 2:$TASK_NAME";
           echo "==============";
           cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: pre-build-check
