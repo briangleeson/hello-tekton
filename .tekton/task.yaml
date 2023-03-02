@@ -38,7 +38,7 @@ spec:
           echo "Cloning $REPOSITORY";
           cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: pre-build-check
-      image: ibmcom/pipeline-base-image
+      image: icr.io/continuous-delivery/pipeline/pipeline-base-image
       env:
         - name: IBMCLOUD_API_KEY
           value: $(params.apikey)
@@ -59,7 +59,7 @@ spec:
           export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh";
           cd /workspace && source pre-build-check.sh;
     - name: build-docker-image
-      image: ibmcom/pipeline-base-image
+      image: icr.io/continuous-delivery/pipeline/pipeline-base-image
       env:
         - name: IBMCLOUD_API_KEY
           value: $(params.apikey)
@@ -144,7 +144,7 @@ spec:
           echo "Cloning $REPOSITORY";
           cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: check-vulnerabilities
-      image: ibmcom/pipeline-base-image
+      image: icr.io/continuous-delivery/pipeline/pipeline-base-image
       env:
         - name: IBMCLOUD_API_KEY
           value: $(params.apikey)
@@ -203,7 +203,7 @@ spec:
           echo "Cloning $REPOSITORY";
           cd /workspace && git clone -q -b $REVISION $REPOSITORY .;
     - name: pre-deploy-check
-      image: ibmcom/pipeline-base-image
+      image: icr.io/continuous-delivery/pipeline/pipeline-base-image
       env:
         - name: IBMCLOUD_API_KEY
           value: $(params.apikey)
@@ -231,7 +231,7 @@ spec:
           cp /artifacts/build.properties .;
           cd /workspace && source pre-deploy-check.sh;
     - name: deploy-to-kubernetes
-      image: ibmcom/pipeline-base-image
+      image: icr.io/continuous-delivery/pipeline/pipeline-base-image
       env:
         - name: IBMCLOUD_API_KEY
           value: $(params.apikey)
