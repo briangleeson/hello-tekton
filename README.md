@@ -22,7 +22,6 @@ The other branches in this repo contain examples that target different releases.
 
 The branches contain:
 
-* tekton-0.7.0: targets the 0.7.0 tekton release
 * tekton-0.10.1-pvc: targets the 0.10.1 tekton release, uses a pvc to pass info
 * tekton-0.10.1-workspaces: targets the 0.10.1 tekton release, uses a workspace to pass info
 * tekton-0.11.2: targets the 0.11.2 tekton release, uses a workspace to pass info (same as master)
